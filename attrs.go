@@ -87,7 +87,11 @@ func fileStatFromInfo(fi os.FileInfo) (uint32, FileStat) {
 	}
 
 	// os specific file stat decoding
-	fileStatFromInfoOs(fi, &flags, &fileStat)
+	if statt, ok := fi.Sys().(*syscall.Stat_t); ok {
+		flags |= ssh_FILEXFER_ATTR_UIDGID
+		fileStat.UID = statt.Uid
+		fileStat.GID = statt.Gid
+	}
 
 	return flags, fileStat
 }

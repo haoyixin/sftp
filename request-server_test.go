@@ -1,6 +1,7 @@
 package sftp
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -26,6 +27,17 @@ func (cs csPair) Close() {
 
 func (cs csPair) testHandler() *root {
 	return cs.svr.Handlers.FileGet.(*root)
+}
+
+func testOsSys(sys interface{}) error {
+	fstat := sys.(*FileStat)
+	if fstat.UID != uint32(65534) {
+		return errors.New("Uid failed to match.")
+	}
+	if fstat.GID != uint32(65534) {
+		return errors.New("Gid failed to match:")
+	}
+	return nil
 }
 
 const sock = "/tmp/rstest.sock"

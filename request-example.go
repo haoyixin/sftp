@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"sort"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -239,4 +240,8 @@ func (f *memFile) WriteAt(p []byte, off int64) (int, error) {
 	}
 	copy(f.content[off:], p)
 	return len(p), nil
+}
+
+func fakeFileInfoSys() interface{} {
+	return &syscall.Stat_t{Uid: 65534, Gid: 65534}
 }
